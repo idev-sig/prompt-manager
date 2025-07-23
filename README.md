@@ -158,7 +158,7 @@ A: 使用配置导出功能备份数据，在新设备导入；或使用WebDAV�
 4. 推送分支：`git push origin feature/new-feature`
 5. 创建Pull Request
 
-## 相关项目
+## 🔗 相关项目
 
 - https://github.com/f/awesome-chatgpt-prompts
 - https://github.com/PlexPt/awesome-chatgpt-prompts-zh
