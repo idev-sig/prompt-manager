@@ -708,6 +708,7 @@ input:checked + .slider:before {
 .config-btn.webdav {
   background-color: #6f42c1;
   color: white;
+  min-width: 140px; /* 适应"保存WebDAV设置"文字 */
 }
 
 .config-btn.webdav:hover {
@@ -717,6 +718,7 @@ input:checked + .slider:before {
 .config-btn.test {
   background-color: #fd7e14;
   color: white;
+  min-width: 100px; /* 增加宽度适应"测试中..."文字 */
 }
 
 .config-btn.test:hover {
@@ -726,6 +728,7 @@ input:checked + .slider:before {
 .config-btn.backup {
   background-color: #20c997;
   color: white;
+  min-width: 100px; /* 固定宽度 */
 }
 
 .config-btn.backup:hover {
@@ -735,6 +738,7 @@ input:checked + .slider:before {
 .config-btn.restore {
   background-color: #6610f2;
   color: white;
+  min-width: 120px; /* 适应"从WebDAV恢复"文字 */
 }
 
 .config-btn.restore:hover {
@@ -746,28 +750,33 @@ input:checked + .slider:before {
   padding: 10px;
   border-radius: 4px;
   font-size: 14px;
-  display: none;
+  height: 40px; /* 固定高度 */
+  display: flex;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border: 1px solid transparent; /* 默认透明边框，保持布局 */
 }
 
 .webdav-status.success {
   background-color: #d4edda;
   color: #155724;
-  border: 1px solid #c3e6cb;
-  display: block;
+  border-color: #c3e6cb;
+  opacity: 1;
 }
 
 .webdav-status.error {
   background-color: #f8d7da;
   color: #721c24;
-  border: 1px solid #f5c6cb;
-  display: block;
+  border-color: #f5c6cb;
+  opacity: 1;
 }
 
 .webdav-status.info {
   background-color: #d1ecf1;
   color: #0c5460;
-  border: 1px solid #bee5eb;
-  display: block;
+  border-color: #bee5eb;
+  opacity: 1;
 }
 
 /* 备份历史样式 */

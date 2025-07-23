@@ -181,4 +181,9 @@ Apache License 2.0 - 详见 [LICENSE](LICENSE) 文件
 
 **⭐ 如果这个项目对你有帮助，请给个Star支持一下！**
 
+## 仓库镜像
+
+- https://git.jetsung.com/idev/prompt-manager
+- https://framagit.org/idev/prompt-manager
+- https://github.com/idevsig/prompt-manager
 

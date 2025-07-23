@@ -20,11 +20,10 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '22'
-        cache: 'npm'
         
-    - name: Install just
-      run: |
-        curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
+    - uses: extractions/setup-just@v3
+    # with:
+    #   just-version: 1.42.3
         
     - name: Install dependencies and build
       run: |

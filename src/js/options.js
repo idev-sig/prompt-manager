@@ -908,12 +908,12 @@ function showWebDAVStatus(message, type) {
   if (statusDiv) {
     statusDiv.textContent = message;
     statusDiv.className = `webdav-status ${type}`;
-    statusDiv.style.display = 'block';
     
     // 3秒后自动隐藏成功和信息提示
     if (type === 'success' || type === 'info') {
       setTimeout(() => {
-        statusDiv.style.display = 'none';
+        statusDiv.className = 'webdav-status';
+        statusDiv.textContent = '';
       }, 3000);
     }
   }

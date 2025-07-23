@@ -46,9 +46,6 @@ Thumbs.db
 *.bak
 *.backup
 
-# Web-ext 产物
-web-ext-artifacts/
-
 # 测试覆盖率
 coverage/
 *.lcov
