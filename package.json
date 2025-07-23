@@ -1,0 +1,43 @@
+{
+  "name": "prompt-manager",
+  "version": "0.1.0",
+  "description": "AI提示词管理器 - Chrome扩展，支持多平台AI网站的提示词注入和WebDAV云端备份。",
+  "main": "src/manifest.json",
+  "scripts": {
+    "build": "just build",
+    "build:zip": "just build-zip",
+    "build:crx": "just build-crx",
+    "lint": "just lint",
+    "clean": "just clean",
+    "prepare": "just prepare",
+    "status": "just status",
+    "version": "just version",
+    "release": "just release",
+    "quick": "just quick"
+  },
+  "keywords": [
+    "chrome-extension",
+    "prompt",
+    "prompt-manager"
+  ],
+  "author": "Jetsung Chan <i@jetsung.com>",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/idevsig/prompt-manager.git"
+  },
+  "bugs": {
+    "url": "https://github.com/idevsig/prompt-manager/issues"
+  },
+  "homepage": "https://github.com/idevsig/prompt-manager#readme",
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=11.0.0"
+  },
+  "files": [
+    "src/**/*",
+    "justfile",
+    "README.md",
+    "LICENSE"
+  ]
+}

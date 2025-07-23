@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI提示词管理器设置</title>
+  <link rel="stylesheet" href="../css/options.css">
+</head>
+<body>
+  <div class="container">
+    <h1>AI提示词管理器设置</h1>
+    
+    <!-- TAB导航 -->
+    <div class="tab-nav">
+      <button class="tab-btn active" data-tab="prompts">提示词管理</button>
+      <button class="tab-btn" data-tab="sites">网站设置</button>
+      <button class="tab-btn" data-tab="config">配置管理</button>
+    </div>
+    
+    <!-- 提示词管理TAB -->
+    <div id="prompts-tab" class="tab-content active">
+      <div class="form-section">
+        <h2>添加新提示词</h2>
+        <form id="platform-form">
+          <div class="form-group">
+            <label for="agent-name">提示词名称：</label>
+            <input type="text" id="agent-name" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="agent-description">提示词内容：</label>
+            <textarea id="agent-description" rows="5" required></textarea>
+          </div>
+          
+          <button type="submit">添加提示词</button>
+        </form>
+      </div>
+      
+      <div class="platforms-section">
+        <h2>已配置的提示词</h2>
+        <div id="platforms-list"></div>
+      </div>
+    </div>
+    
+    <!-- 网站设置TAB -->
+    <div id="sites-tab" class="tab-content">
+      <div class="form-section">
+        <h2>网站启用设置</h2>
+        <p class="section-desc">选择在哪些网站显示提示词选择器</p>
+        <div id="sites-list"></div>
+        
+        <div class="add-site-form">
+          <div class="form-row">
+            <input type="text" id="new-site-domain" placeholder="输入网站域名，如：example.com">
+            <input type="text" id="new-site-name" placeholder="输入网站名称">
+            <button id="add-site-btn">添加网站</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 配置管理TAB -->
+    <div id="config-tab" class="tab-content">
+      <div class="form-section">
+        <h2>配置导入导出</h2>
+        <p class="section-desc">备份和恢复您的所有设置</p>
+        
+        <div class="config-actions">
+          <button id="export-config-btn" class="config-btn export">
+            <span class="btn-icon">📤</span>
+            导出全部配置
+          </button>
+          <button id="import-config-btn" class="config-btn import">
+            <span class="btn-icon">📥</span>
+            导入配置（覆盖）
+          </button>
+          <button id="merge-config-btn" class="config-btn merge">
+            <span class="btn-icon">🔄</span>
+            合并配置
+          </button>
+          <input type="file" id="import-file-input" accept=".json" class="hidden-file-input" aria-label="选择配置文件进行导入">
+          <input type="file" id="merge-file-input" accept=".json" class="hidden-file-input" aria-label="选择配置文件进行合并">
+        </div>
+      </div>
+
+      <!-- WebDAV备份配置 -->
+      <div class="form-section">
+        <h2>WebDAV云备份</h2>
+        <p class="section-desc">配置WebDAV服务器进行自动备份</p>
+        
+        <div class="webdav-config">
+          <form id="webdav-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="webdav-url">WebDAV服务器地址：</label>
+                <input type="text" id="webdav-url" placeholder="https://your-webdav-server.com/path">
+              </div>
+              <div class="form-group">
+                <label for="webdav-filename">备份文件名：</label>
+                <input type="text" id="webdav-filename" placeholder="prompt-manager-backup.json">
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="webdav-username">用户名：</label>
+                <input type="text" id="webdav-username" placeholder="用户名（可选）">
+              </div>
+              <div class="form-group">
+                <label for="webdav-password">密码：</label>
+                <input type="password" id="webdav-password" placeholder="密码（可选）">
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label class="auto-backup-toggle">
+                <input type="checkbox" id="auto-backup-enabled">
+                启用自动备份（每24小时）
+              </label>
+            </div>
+            
+            <button type="submit" class="config-btn webdav">保存WebDAV设置</button>
+          </form>
+          
+          <div class="webdav-actions">
+            <button id="test-webdav-btn" class="config-btn test">测试连接</button>
+            <button id="backup-to-webdav-btn" class="config-btn backup">立即备份</button>
+            <button id="restore-from-webdav-btn" class="config-btn restore">从WebDAV恢复</button>
+          </div>
+          
+          <div id="webdav-status" class="webdav-status"></div>
+        </div>
+      </div>
+        
+      <div class="config-info">
+        <h3>操作说明</h3>
+        <ul>
+          <li><strong>导出配置：</strong>将当前所有提示词和网站设置保存到文件</li>
+          <li><strong>导入配置：</strong>完全替换当前配置（会清除现有设置）</li>
+          <li><strong>合并配置：</strong>将新配置与现有配置合并（保留现有设置）</li>
+          <li><strong>WebDAV备份：</strong>自动将配置备份到云端WebDAV服务器</li>
+        </ul>
+      </div>
+        
+      <div class="config-stats">
+        <h3>当前配置统计</h3>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <span class="stat-number" id="prompts-count">0</span>
+            <span class="stat-label">提示词数量</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" id="sites-count">0</span>
+            <span class="stat-label">网站数量</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" id="enabled-sites-count">0</span>
+            <span class="stat-label">已启用网站</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="message"></div>
+  </div>
+  
+  <!-- 编辑提示词模态框 -->
+  <div id="edit-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>编辑提示词</h3>
+        <span class="close">&times;</span>
+      </div>
+      <div class="modal-body">
+        <form id="edit-platform-form">
+          <div class="form-group">
+            <label for="edit-agent-name">提示词名称：</label>
+            <input type="text" id="edit-agent-name" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="edit-agent-description">提示词内容：</label>
+            <textarea id="edit-agent-description" rows="5" required></textarea>
+          </div>
+          
+          <div class="modal-actions">
+            <button type="button" id="cancel-edit-btn" class="btn-secondary">取消</button>
+            <button type="submit" class="btn-primary">保存修改</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  
+  <script src="../js/options.js"></script>
+</body>
+</html>

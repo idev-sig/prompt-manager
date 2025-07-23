@@ -1,0 +1,42 @@
+{
+  "manifest_version": 3,
+  "name": "AI提示词管理器",
+  "version": "0.1.0",
+  "description": "用于管理和快速使用AI提示词，支持多平台AI网站的提示词注入和WebDAV云端备份。",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "tabs",
+    "clipboardWrite"
+  ],
+  "host_permissions": [
+    "https://*/*",
+    "http://*/*"
+  ],
+  "action": {
+    "default_popup": "html/popup.html",
+    "default_title": "AI提示词管理器",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "options_page": "html/options.html",
+  "background": {
+    "service_worker": "js/background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["js/content.js"],
+      "css": ["css/float-window.css"],
+      "run_at": "document_end"
+    }
+  ]
+}

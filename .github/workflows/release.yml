@@ -1,0 +1,97 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        cache: 'npm'
+        
+    - name: Install just
+      run: |
+        curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
+        
+    - name: Get version from tag
+      id: get_version
+      run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+      
+    - name: Install dependencies and build
+      run: |
+        just install
+        just build
+        
+    - name: Generate changelog
+      id: changelog
+      run: |
+        echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
+        echo "## 🚀 AI提示词管理器 v${{ steps.get_version.outputs.VERSION }}" >> $GITHUB_OUTPUT
+        echo "" >> $GITHUB_OUTPUT
+        echo "### ✨ 新功能" >> $GITHUB_OUTPUT
+        echo "- 请在此处添加新功能说明" >> $GITHUB_OUTPUT
+        echo "" >> $GITHUB_OUTPUT
+        echo "### 🐛 修复" >> $GITHUB_OUTPUT
+        echo "- 请在此处添加修复说明" >> $GITHUB_OUTPUT
+        echo "" >> $GITHUB_OUTPUT
+        echo "### 📦 安装方法" >> $GITHUB_OUTPUT
+        echo "" >> $GITHUB_OUTPUT
+        echo "#### 方法1: 直接安装CRX文件" >> $GITHUB_OUTPUT
+        echo "1. 下载 \`prompt-manager-v${{ steps.get_version.outputs.VERSION }}.crx\` 文件" >> $GITHUB_OUTPUT
+        echo "2. 打开 Chrome 扩展管理页面 \`chrome://extensions/\`" >> $GITHUB_OUTPUT
+        echo "3. 开启开发者模式" >> $GITHUB_OUTPUT
+        echo "4. 拖拽 \`.crx\` 文件到页面进行安装" >> $GITHUB_OUTPUT
+        echo "" >> $GITHUB_OUTPUT
+        echo "#### 方法2: 解压ZIP文件安装" >> $GITHUB_OUTPUT
+        echo "1. 下载 \`prompt-manager-v${{ steps.get_version.outputs.VERSION }}.zip\` 文件" >> $GITHUB_OUTPUT
+        echo "2. 解压到本地文件夹" >> $GITHUB_OUTPUT
+        echo "3. 在Chrome扩展管理页面点击\"加载已解压的扩展程序\"" >> $GITHUB_OUTPUT
+        echo "4. 选择解压后的文件夹" >> $GITHUB_OUTPUT
+        echo "" >> $GITHUB_OUTPUT
+        echo "### 🔧 技术信息" >> $GITHUB_OUTPUT
+        echo "- Node.js: 22.x" >> $GITHUB_OUTPUT
+        echo "- Manifest Version: 3" >> $GITHUB_OUTPUT
+        echo "- 构建时间: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+        
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ steps.get_version.outputs.VERSION }}
+        release_name: AI提示词管理器 v${{ steps.get_version.outputs.VERSION }}
+        body: ${{ steps.changelog.outputs.CHANGELOG }}
+        draft: false
+        prerelease: false
+        
+    - name: Upload CRX to Release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./prompt-manager-v${{ steps.get_version.outputs.VERSION }}.crx
+        asset_name: prompt-manager-v${{ steps.get_version.outputs.VERSION }}.crx
+        asset_content_type: application/x-chrome-extension
+        
+    - name: Upload ZIP to Release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./prompt-manager-v${{ steps.get_version.outputs.VERSION }}.zip
+        asset_name: prompt-manager-v${{ steps.get_version.outputs.VERSION }}.zip
+        asset_content_type: application/zip
