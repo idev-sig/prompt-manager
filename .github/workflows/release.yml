@@ -1,66 +1,71 @@
+---
 name: Create Release
 
 on:
   push:
     tags:
-      - 'v*'
+    - v*
 
 jobs:
   release:
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      
+
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '22'
-        
-    - uses: extractions/setup-just@v3
-        
+    - name: Setup Just
+      uses: extractions/setup-just@v3
+
     - name: Get version from tag
       id: get_version
       run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-      
+
     - name: Install dependencies and build
       run: |
         just install
         just build
-        
+
     - name: Generate changelog
       id: changelog
       run: |
+        {
+          echo "## 🚀 AI提示词管理器 v${{ steps.get_version.outputs.VERSION }}"
+          echo ""
+          echo "### ✨ 新功能"
+          echo "- 请在此处添加新功能说明"
+          echo ""
+          echo "### 🐛 修复"
+          echo "- 请在此处添加修复说明"
+          echo ""
+          echo "### 📦 安装方法"
+          echo ""
+          echo "#### 方法1: 直接安装CRX文件"
+          echo "1. 下载 \`prompt-manager-v${{ steps.get_version.outputs.VERSION }}.crx\` 文件"
+          echo "2. 打开 Chrome 扩展管理页面 \`chrome://extensions/\`"
+          echo "3. 开启开发者模式"
+          echo "4. 拖拽 \`.crx\` 文件到页面进行安装"
+          echo ""
+          echo "#### 方法2: 解压ZIP文件安装"
+          echo "1. 下载 \`prompt-manager-v${{ steps.get_version.outputs.VERSION }}.zip\` 文件"
+          echo "2. 解压到本地文件夹"
+          echo "3. 在Chrome扩展管理页面点击\"加载已解压的扩展程序\""
+          echo "4. 选择解压后的文件夹"
+          echo ""
+          echo "### 🔧 技术信息"
+          echo "- Node.js: 22.x"
+          echo "- Manifest Version: 3"
+          echo "- 构建时间: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+        } > changelog.md
+
         echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
-        echo "## 🚀 AI提示词管理器 v${{ steps.get_version.outputs.VERSION }}" >> $GITHUB_OUTPUT
-        echo "" >> $GITHUB_OUTPUT
-        echo "### ✨ 新功能" >> $GITHUB_OUTPUT
-        echo "- 请在此处添加新功能说明" >> $GITHUB_OUTPUT
-        echo "" >> $GITHUB_OUTPUT
-        echo "### 🐛 修复" >> $GITHUB_OUTPUT
-        echo "- 请在此处添加修复说明" >> $GITHUB_OUTPUT
-        echo "" >> $GITHUB_OUTPUT
-        echo "### 📦 安装方法" >> $GITHUB_OUTPUT
-        echo "" >> $GITHUB_OUTPUT
-        echo "#### 方法1: 直接安装CRX文件" >> $GITHUB_OUTPUT
-        echo "1. 下载 \`prompt-manager-v${{ steps.get_version.outputs.VERSION }}.crx\` 文件" >> $GITHUB_OUTPUT
-        echo "2. 打开 Chrome 扩展管理页面 \`chrome://extensions/\`" >> $GITHUB_OUTPUT
-        echo "3. 开启开发者模式" >> $GITHUB_OUTPUT
-        echo "4. 拖拽 \`.crx\` 文件到页面进行安装" >> $GITHUB_OUTPUT
-        echo "" >> $GITHUB_OUTPUT
-        echo "#### 方法2: 解压ZIP文件安装" >> $GITHUB_OUTPUT
-        echo "1. 下载 \`prompt-manager-v${{ steps.get_version.outputs.VERSION }}.zip\` 文件" >> $GITHUB_OUTPUT
-        echo "2. 解压到本地文件夹" >> $GITHUB_OUTPUT
-        echo "3. 在Chrome扩展管理页面点击\"加载已解压的扩展程序\"" >> $GITHUB_OUTPUT
-        echo "4. 选择解压后的文件夹" >> $GITHUB_OUTPUT
-        echo "" >> $GITHUB_OUTPUT
-        echo "### 🔧 技术信息" >> $GITHUB_OUTPUT
-        echo "- Node.js: 22.x" >> $GITHUB_OUTPUT
-        echo "- Manifest Version: 3" >> $GITHUB_OUTPUT
-        echo "- 构建时间: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_OUTPUT
+        cat changelog.md >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
-        
+
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -72,7 +77,7 @@ jobs:
         body: ${{ steps.changelog.outputs.CHANGELOG }}
         draft: false
         prerelease: false
-        
+
     - name: Upload CRX to Release
       uses: actions/upload-release-asset@v1
       env:
@@ -82,7 +87,7 @@ jobs:
         asset_path: ./prompt-manager-v${{ steps.get_version.outputs.VERSION }}.crx
         asset_name: prompt-manager-v${{ steps.get_version.outputs.VERSION }}.crx
         asset_content_type: application/x-chrome-extension
-        
+
     - name: Upload ZIP to Release
       uses: actions/upload-release-asset@v1
       env:
@@ -98,18 +103,17 @@ jobs:
       id: publish-chrome-extension
       uses: puzzlers-labs/chrome-webstore-publish@v1
       with:
-        mode: publish # Or `sign` to sign the extension and publish at a later step (manually).
+        mode: publish
         extension_id: ${{ vars.CHROME_EXTENSION_ID }}
         zip_file_path: ./prompt-manager-v${{ steps.get_version.outputs.VERSION }}.zip
         client_id: ${{ secrets.GOOGLE_CLIENT_ID }}
         client_secret: ${{ secrets.GOOGLE_CLIENT_SECRET }}
         refresh_token: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
-        publish_target: public # Or `testers` for internal publishing target to TrustedTesters.
-        expedited_review: true # This does not guarantee an expedited Review process. But it makes an attempt.
-        # Only one of the following should be provided:
+        publish_target: public
+        expedited_review: true
         crx_private_key: ${{ secrets.CRX_PRIVATE_KEY }}
         # crx_private_key_path: ./path/to/key.pem
 
-    # Example: Use the output path in a later step
-    - name: Use package artifact path
-      run: echo "Package artifact path: ${{ steps.publish-chrome-extension.outputs.package-artifact-path }}"
+    - name: Log package artifact path
+      run: |
+        echo "Package artifact path: ${{ steps.publish-chrome-extension.outputs.package-artifact-path }}"
