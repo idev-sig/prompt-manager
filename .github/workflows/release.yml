@@ -92,3 +92,24 @@ jobs:
         asset_path: ./prompt-manager-v${{ steps.get_version.outputs.VERSION }}.zip
         asset_name: prompt-manager-v${{ steps.get_version.outputs.VERSION }}.zip
         asset_content_type: application/zip
+
+    # https://developer.chrome.com/docs/webstore/using-api
+    - name: Publish to Chrome Web Store
+      id: publish-chrome-extension
+      uses: puzzlers-labs/chrome-webstore-publish@v1
+      with:
+        mode: publish # Or `sign` to sign the extension and publish at a later step (manually).
+        extension_id: ${{ vars.CHROME_EXTENSION_ID }}
+        zip_file_path: ./prompt-manager-v${{ steps.get_version.outputs.VERSION }}.zip
+        client_id: ${{ secrets.GOOGLE_CLIENT_ID }}
+        client_secret: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+        refresh_token: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
+        publish_target: public # Or `testers` for internal publishing target to TrustedTesters.
+        expedited_review: true # This does not guarantee an expedited Review process. But it makes an attempt.
+        # Only one of the following should be provided:
+        crx_private_key: ${{ secrets.CRX_PRIVATE_KEY }}
+        # crx_private_key_path: ./path/to/key.pem
+
+    # Example: Use the output path in a later step
+    - name: Use package artifact path
+      run: echo "Package artifact path: ${{ steps.publish-chrome-extension.outputs.package-artifact-path }}"

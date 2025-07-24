@@ -17,7 +17,6 @@
 - **自动备份**：每24小时自动备份到WebDAV
 
 ### 🔒 安全特性
-- **密码加密**：WebDAV密码使用AES-GCM加密存储
 - **数据同步**：使用Chrome同步存储，多设备数据同步
 - **权限最小化**：仅请求必要的浏览器权限
 
@@ -30,7 +29,7 @@
 
 ### 从源码安装
 ```bash
-git clone https://github.com/idevsig/prompt-manager.git
+git clone https://github.com/idev-sig/prompt-manager.git
 cd prompt-manager
 just build  # 完整构建
 ```
@@ -79,7 +78,7 @@ just build  # 完整构建
 ### 快速开始
 ```bash
 # 克隆项目
-git clone https://github.com/idevsig/prompt-manager.git
+git clone https://github.com/idev-sig/prompt-manager.git
 cd prompt-manager
 
 # 安装依赖
@@ -185,5 +184,5 @@ Apache License 2.0 - 详见 [LICENSE](LICENSE) 文件
 
 - https://git.jetsung.com/idev/prompt-manager
 - https://framagit.org/idev/prompt-manager
-- https://github.com/idevsig/prompt-manager
+- https://github.com/idev-sig/prompt-manager
 
