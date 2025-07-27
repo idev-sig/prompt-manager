@@ -10,8 +10,6 @@
   },
   "permissions": [
     "storage",
-    "activeTab",
-    "tabs",
     "clipboardWrite"
   ],
   "host_permissions": [

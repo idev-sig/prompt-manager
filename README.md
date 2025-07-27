@@ -71,7 +71,7 @@ just build  # 完整构建
 ## 🛠️ 开发
 
 ### 环境要求
-- Node.js 12+
+- Node.js 22+
 - Chrome浏览器
 - just 命令行工具
 
