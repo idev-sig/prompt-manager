@@ -10,7 +10,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     env:
-    - CRX_PRIVATE_KEY: ${{ secrets.CRX_PRIVATE_KEY }}
+      CRX_PRIVATE_KEY: ${{ secrets.CRX_PRIVATE_KEY }}
 
     steps:
     - name: Checkout code
@@ -113,8 +113,8 @@ jobs:
         refresh_token: ${{ secrets.GOOGLE_REFRESH_TOKEN }}
         publish_target: public
         expedited_review: true
-        crx_private_key: ${{ secrets.CRX_PRIVATE_KEY }}
-        # crx_private_key_path: ./path/to/key.pem
+        # crx_private_key: ${{ env.CRX_PRIVATE_KEY }}
+        # crx_private_key_path: ./private-key.pem
 
     - name: Log package artifact path
       run: |
