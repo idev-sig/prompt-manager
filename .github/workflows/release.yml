@@ -9,6 +9,8 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+    - CRX_PRIVATE_KEY: ${{ secrets.CRX_PRIVATE_KEY }}
 
     steps:
     - name: Checkout code

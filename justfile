@@ -41,6 +41,10 @@ check-icons:
 # 生成私钥
 generate-key:
     @echo "生成私钥..."
+    @if [ -n "${CRX_PRIVATE_KEY}" ]; then \
+        echo "${CRX_PRIVATE_KEY}" > private-key.pem; \
+        echo "✅ 私钥从环境变量 CRX_PRIVATE_KEY 生成"; \
+    fi
     @if [ ! -f "private-key.pem" ]; then \
         openssl genrsa -out private-key.pem 2048; \
         echo "✅ 私钥已生成"; \
